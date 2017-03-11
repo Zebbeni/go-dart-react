@@ -6,14 +6,16 @@ Boilerplate Go App with Dart + React Frontend
 - [Google Appengine SDK for Go](https://cloud.google.com/appengine/docs/standard/go/download)
 - [Dart](https://webdev.dartlang.org/guides/get-started)
 
-## Compile Dart to Javascript
+## Build & Run
+
+### 1. Compile Dart to Javascript
     pub get
     pub build
     
-## Run locally
+### 2. Run Local
     goapp serve
 - Serves on localhost:8080
 
-## Deploy to Google App Engine
+### 3. Deploy
     goapp deploy -application [APPLICATION_ID] -version [VERSION_ID] .
-- Note: If 403 error, try deleting ~/.appcfg_oauth2_tokens to 
+- Note: If 403 error, try deleting ~/.appcfg_oauth2_tokens so it re-authenticates
