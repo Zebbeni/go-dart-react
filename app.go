@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-    fs := http.FileServer(http.Dir("web"))
+    fs := http.FileServer(http.Dir("build/web"))
     http.Handle("/", fs)
 	http.HandleFunc("/somefunc", handler)
 }
