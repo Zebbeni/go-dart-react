@@ -6,7 +6,9 @@ import (
 )
 
 func init() {
-    http.HandleFunc("/", handler)
+    fs := http.FileServer(http.Dir("web"))
+    http.Handle("/", fs)
+	http.HandleFunc("/somefunc", handler)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
