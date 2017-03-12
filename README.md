@@ -14,7 +14,9 @@ Boilerplate Go App with Dart + React Frontend
     
 ### 2. Run Local
     goapp serve
-- Serves on localhost:8080
+OR run front-end only for debugging:
+    pub serve web
+- Both serve on localhost:8080
 
 ### 3. Deploy
     goapp deploy -application [APPLICATION_ID] -version [VERSION_ID] .

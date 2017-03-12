@@ -6,26 +6,6 @@ import 'package:react/react.dart' as react;
 import 'package:react/react_dom.dart' as react_dom;
 import 'package:react/react_client.dart' as react_client;
 
-
-/**
- * Hello,
- *
- * This is the Dart portion of the tutorial for the Dart react package.
- *
- * We'll go through a simple app that queries the Google Maps API and shows the result to the user.
- * It also stores the search history and allows the user to reload past queries.
- *
- * In this file you'll find the structure and the logic of the app. There is also a `geocodes.html` file which contains
- * the mount point.
- *
- * Be sure that you understand the basic concepts of [React](http://facebook.github.io/react/) before reading this
- * tutorial.
- *
- * Enjoy!
- */
-
-
-
 /// Divide your app into components and conquer!
 ///
 /// This is the first custom [Component].
@@ -227,7 +207,8 @@ class _GeocodesApp extends react.Component {
 
     // Prepare the URL
     addressQuery = Uri.encodeQueryComponent(addressQuery);
-    var path = 'https://maps.googleapis.com/maps/api/geocode/json?address=$addressQuery';
+//    var path = 'https://maps.googleapis.com/maps/api/geocode/json?address=$addressQuery';
+    var path = '/func';
 
     // Send the request
     HttpRequest.getString(path)
@@ -242,6 +223,7 @@ class _GeocodesApp extends react.Component {
         state['history'][id]['status']='OK';
 
         var data = JSON.decode(raw);
+        print(data);
 
         // Calling `setState` will update the state and then repaint the component.
         //
