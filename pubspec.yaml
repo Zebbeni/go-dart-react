@@ -1,4 +1,4 @@
 name: go_dart_react
 description: Boilerplate for app running Go server with Dart + React front-end
 dependencies:
-  react:
+  react: "^3.2.0"
