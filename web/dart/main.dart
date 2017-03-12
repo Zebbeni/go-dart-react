@@ -125,52 +125,6 @@ class _GeocodesForm extends react.Component {
 var geocodesForm = react.registerComponent(() => new _GeocodesForm());
 
 
-/// Renders an HTML `<li>` to be used as a child within the [_GeocodesHistoryList].
-class _GeocodesHistoryItem extends react.Component {
-  reload(e) {
-    props['reloader'](props['query']);
-  }
-
-  @override
-  render() {
-    return react.li({}, [
-      react.button({
-        'className': 'btn btn-sm btn-default',
-        'onClick': reload
-      }, 'Reload'),
-      ' (${props['status']}) ${props['query']}'
-    ]);
-  }
-}
-
-var geocodesHistoryItem = react.registerComponent(() => new _GeocodesHistoryItem());
-
-
-/// Renders the "history list"
-///
-/// NOTE: It just passes the callback from the parent.
-class _GeocodesHistoryList extends react.Component {
-  @override
-  render() {
-    return react.div({}, [
-      react.h3({}, 'History:'),
-      react.ul({},
-          new List.from(props['data'].keys.map(
-              (key) => geocodesHistoryItem({
-            'key': key,
-            'query': props['data'][key]['query'],
-            'status': props['data'][key]['status'],
-            'reloader': props['reloader']
-          })
-          )).reversed
-      )
-    ]);
-  }
-}
-
-var geocodesHistoryList = react.registerComponent(() => new _GeocodesHistoryList());
-
-
 /// The root [Component] of our application.
 ///
 /// Introduces [state]. Both [state] and [props] are valid locations to store [Component] data.
@@ -189,11 +143,10 @@ var geocodesHistoryList = react.registerComponent(() => new _GeocodesHistoryList
 ///
 /// When the request is sent, it has `pending` status in the history. This changes to `OK` or `error` when the answer
 /// _(or timeout)_ comes. If the new request is sent meanwhile, the old one is cancelled.
-class _GeocodesApp extends react.Component {
+class _App extends react.Component {
   @override
   getInitialState() => {
     'shown_addresses': [], // Data from last query.
-    'history': {} // Map of past queries.
   };
 
   /// The id of the last query.
@@ -201,9 +154,6 @@ class _GeocodesApp extends react.Component {
 
   /// Sends the [addressQuery] to the API and processes the result
   newQuery(String addressQuery) {
-
-    // Once the query is being sent, it appears in the history and is given an id.
-    var id = addQueryToHistory(addressQuery);
 
     // Prepare the URL
     addressQuery = Uri.encodeQueryComponent(addressQuery);
@@ -217,10 +167,6 @@ class _GeocodesApp extends react.Component {
     new Future.delayed(new Duration(seconds: 2), () => value)
     )
         .then((String raw) {
-      // Is this the answer to the last request?
-      if (id == last_id) {
-        // If yes, query was `OK` and `shown_addresses` are replaced
-        state['history'][id]['status']='OK';
 
         var data = JSON.decode(raw);
         print(data);
@@ -236,47 +182,17 @@ class _GeocodesApp extends react.Component {
         //
         // Have a look at `vacuum_persistent` package to achieve immutability of state.
         setState({
-          'shown_addresses': data['results'],
-          'history': state['history']
+          'shown_addresses': data['results']
         });
-      } else {
-        // Otherwise, query was `canceled`
-        state['history'][id]['status'] = 'canceled';
-
-        setState({
-          'history': state['history']
-        });
-      }
     })
         .catchError((Error error) {
-      state['history'][id]['status'] = 'error';
-
-      setState({
-        'history': state['history']
-      });
     });
-  }
-
-  /// Add a new [addressQuery] to the `state.history` Map with its status set to 'pending', then return its `id`.
-  addQueryToHistory(String addressQuery) {
-    var id = ++last_id;
-
-    state['history'][id] = {
-      'query': addressQuery,
-      'status': 'pending'
-    };
-
-    setState({
-      'history': state['history']
-    });
-
-    return id;
   }
 
   @override
   render() {
     return react.div({}, [
-      react.h1({}, 'Geocode resolver'),
+      react.h1({}, 'App'),
       geocodesResultList({
         // The state values are passed to the children as the properties.
         'data': state['shown_addresses']
@@ -284,22 +200,17 @@ class _GeocodesApp extends react.Component {
       geocodesForm({
         // `newQuery` is the final callback of the button click.
         'submitter': newQuery
-      }),
-      geocodesHistoryList({
-        'data': state['history'],
-        // `newQuery` is the final callback of the button click.
-        'reloader': newQuery
       })
     ]);
   }
 }
 
-var geocodesApp = react.registerComponent(() => new _GeocodesApp());
+var app = react.registerComponent(() => new _App());
 
 /// And finally, a few magic commands to wire it all up!
 ///
 /// Select the root of the app and the place in the DOM where it should be mounted.
 void main() {
   react_client.setClientConfiguration();
-  react_dom.render(geocodesApp({}), querySelector('#content'));
+  react_dom.render(app({}), querySelector('#content'));
 }
