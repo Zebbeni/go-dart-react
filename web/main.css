@@ -1,8 +1,20 @@
-#content {
-    margin: 15px;
-    padding: 15px;
+#content, .childDiv {
     border-color: gainsboro;
     border-width: 1px;
     border-style: solid;
     border-radius: 10px;
+}
+
+#content {
+    margin: 15px;
+    padding: 15px;
+}
+
+.childDiv {
+    display: inline-block;
+    max-width: 100%;
+    min-width: 49%;
+    margin: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
 }

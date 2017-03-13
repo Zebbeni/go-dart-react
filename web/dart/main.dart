@@ -8,40 +8,30 @@ import 'package:react/react_client.dart' as react_client;
 
 class _LeftChild extends react.Component {
   @override
-  getInitialState() => {
-    'value': 0,
-  };
-
-  @override
   render() {
-    return react.div({}, [
-      react.h1({}, props['value']),
+    return react.div({
+      'className': 'childDiv',
+      'id': 'leftChild',
+    }, [
+      react.h2({}, props['value']),
     ]);
   }
 }
-
 var leftChild = react.registerComponent(() => new _LeftChild());
 
 class _RightChild extends react.Component {
   @override
-  getInitialState() => {
-    'value': 3,
-  };
-
-  @override
   render() {
-    return react.div({}, [
-      react.h1({}, props['value']),
+    return react.div({
+      'className': 'childDiv',
+      'id': 'rightChild',
+    }, [
+      react.h2({}, props['value']),
     ]);
   }
 }
-
 var rightChild = react.registerComponent(() => new _RightChild());
 
-/// In this [Component] we'll build a search form.
-///
-/// This [Component] illustrates that:
-///
 /// > The functions can be [Component] parameters _(handy for callbacks)_
 ///
 /// > The DOM [Element]s can be accessed using [ref]s.
@@ -58,7 +48,7 @@ class _AppForm extends react.Component {
         react.button({
           'className': 'btn btn-primary',
           'type': 'submit'
-        }, 'Submit'),
+        }, 'Update All'),
       ])
     ]);
   }
@@ -86,29 +76,18 @@ var appForm = react.registerComponent(() => new _AppForm());
 ///
 /// > When [state] is changed, the component will re-render.
 ///
-/// It's a common practice to store the application data in the [state] of the root [Component]. It will re-render
-/// every time the state is changed. However, it is not required - you can also use normal variables and re-render
-/// manually if you wish.
-///
-/// When the request is sent, it has `pending` status in the history. This changes to `OK` or `error` when the answer
-/// _(or timeout)_ comes. If the new request is sent meanwhile, the old one is cancelled.
 class _App extends react.Component {
   @override
   getInitialState() => {
-    'leftValue': 1, // Data from last query.
+    'leftValue': 1,
     'rightValue': 2,
   };
 
-  /// The id of the last query.
-  var last_id = 0;
-
   /// Sends request to the server processes the result
-  newQuery() {
-    // Prepare the URL
-    var path = '/func';
+  updateAll() {
 
-    // Send the request
-    HttpRequest.getString(path)
+    // Send the request to /func
+    HttpRequest.getString('/func')
         .then((value) =>
     // Delay the answer 2 more seconds, for test purposes
     new Future.delayed(new Duration(seconds: 2), () => value)
@@ -132,11 +111,13 @@ class _App extends react.Component {
   render() {
     return react.div({}, [
       react.h1({}, 'App'),
-      leftChild({'value': state['leftValue']}),
-      rightChild({'value': state['rightValue']}),
+      leftChild({
+        'value': state['leftValue'],
+      }),
+      rightChild({
+        'value': state['rightValue']}),
       appForm({
-        // `newQuery` is the final callback of the button click.
-        'submitter': newQuery
+        'submitter': updateAll  // call App's submit function from form child
       })
     ]);
   }
